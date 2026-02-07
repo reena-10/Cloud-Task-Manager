@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000/api/tasks";
+const API_URL = "https://cloud-task-manager-1519.onrender.com";
 
 // 1. Dark Mode Persistence
 function toggleTheme() {
