@@ -12,6 +12,7 @@ app.use(cors());
 app.use(express.json());
 
 // 2. ROUTES
+app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/tasks", taskRoutes);
 
 // 3. DATABASE CONNECTION
