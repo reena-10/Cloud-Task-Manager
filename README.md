@@ -1,43 +1,56 @@
-# Cloud Task Manager 🚀
+# ☁️ Cloud Task Manager (MERN Stack)
 
-A professional MERN stack Task Manager application featuring a modern UI, dark mode, and cloud-synchronized data storage.
+A professional, secure, and cloud-based Task Management application built during my Full-Stack Web Development internship. This project evolved from a simple UI to a fully secured backend system.
 
-## 🌐 Live Demo
-* **Frontend:** [https://reena-10.github.io/Cloud-Task-Manager/](https://reena-10.github.io/Cloud-Task-Manager/)
-* **Backend API:** [https://cloud-task-manager-1519.onrender.com/api/tasks](https://cloud-task-manager-1519.onrender.com/api/tasks)
+---
 
-## ✨ Features
-* **Full CRUD Operations:** Create, Read, Update, and Delete tasks in real-time.
-* **Professional UI:** Clean "Glassmorphism" dashboard with **Inter** typography.
-* **Persistent Dark Mode:** Theme preference is saved using browser `localStorage`.
-* **Cloud Database:** Data is persisted globally using **MongoDB Atlas**.
-* **Cross-Origin Enabled:** Fully configured with `CORS` for secure cloud communication.
+## 🚀 Project Evolution
 
-## 🛠️ Tech Stack
-* **Frontend:** HTML5, CSS3 (Variables & Flexbox), JavaScript (ES6+)
-* **Backend:** Node.js, Express.js
-* **Database:** MongoDB Atlas (NoSQL)
-* **Deployment:** GitHub Pages (Frontend), Render (Backend)
+### 🔹 Level 1: Frontend & Basic CRUD
+- Developed a responsive User Interface using **HTML, CSS, and JavaScript**.
+- Implemented core **CRUD** (Create, Read, Update, Delete) functionality.
+- Managed tasks locally to ensure a smooth user experience.
 
-## 🏗️ Architecture
-The project follows a distributed cloud architecture:
-1. The **User** interacts with the UI hosted on **GitHub Pages**.
-2. Requests are sent to the **Node.js/Express** server hosted on **Render**.
-3. Data is stored and retrieved from a **MongoDB Atlas** cluster.
+### 🔹 Level 2: Database & Cloud Integration
+- Integrated **Node.js** and **Express.js** to handle server-side logic.
+- Connected the application to **MongoDB Atlas** for permanent cloud data storage.
+- Deployed the backend live on **Render** to make the API accessible globally.
 
-## 🚀 Local Setup
-1. Clone the repository:
-   ```bash
-   git clone [https://github.com/reena-10/Cloud-Task-Manager.git](https://github.com/reena-10/Cloud-Task-Manager.git)
-2. Install dependencies:
-   ```bash
-   npm install
-3. Create a .env file and add your connection string:
-   ```bash
-   MONGO_URI=your_mongodb_atlas_uri
-   PORT=3000
-4. Run the server:
-   ```bash
-   npm run dev
- ## 🔒 Security Note
-This project uses Environment Variables to protect sensitive credentials. The .env file is included in .gitignore to prevent database passwords from being exposed on public repositories.
+
+
+### 🔹 Level 3: Security & User Privacy (Advanced)
+- **JWT Authentication:** Implemented secure Login/Signup using **JSON Web Tokens**.
+- **Password Hashing:** Used **Bcrypt** to encrypt user passwords before saving them to the database.
+- **Protected Routes:** Created custom middleware to restrict access to authenticated users only.
+- **User-Specific Data:** Linked tasks to individual **User IDs**, ensuring users can only see and manage their own private tasks.
+
+
+
+---
+
+## 🛠 Tech Stack
+- **Frontend:** HTML5, CSS3, JavaScript (Vanilla)
+- **Backend:** Node.js, Express.js
+- **Database:** MongoDB Atlas
+- **Authentication:** JWT (JSON Web Tokens)
+- **Deployment:** Render / GitHub Pages
+
+---
+
+## 🔑 Key Features
+- **User Accounts:** Secure registration and login system.
+- **Private Dashboard:** Tasks are private to the logged-in user.
+- **RESTful API:** Clean and organized API endpoints for all operations.
+- **Cloud Hosted:** Fully functional and live on the web.
+
+---
+
+## 📂 Project Structure
+- `/middleware`: Authentication logic (JWT validation).
+- `/models`: Database schemas for Users and Tasks.
+- `/routes`: API endpoints for Auth and Task management.
+- `server.js`: The main entry point of the application.
+
+---
+
+**Developed by Reena Mahto** 
