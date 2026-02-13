@@ -3,6 +3,9 @@
 A professional, secure, and cloud-based Task Management application built during my Full-Stack Web Development internship. This project evolved from a simple UI to a fully secured backend system.
 
 ---
+**Live Demo:** https://reena-10.github.io/Cloud-Task-Manager/
+
+**Backend API:** https://cloud-task-manager-1519.onrender.com
 
 ## 🚀 Project Evolution
 
