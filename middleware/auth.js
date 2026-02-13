@@ -11,7 +11,7 @@ module.exports = function (req, res, next) {
 
   try {
     // 2. Token ko verify karein (Yahan wahi Secret Key use karein jo login mein ki thi)
-    const decoded = jwt.verify(token, "MY_SECRET_KEY");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     // 3. User ki ID ko request object mein daal dein
     req.user = decoded.id;
