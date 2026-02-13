@@ -11,6 +11,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Root Route
+app.get("/", (req, res) => {
+  res.send(
+    "Welcome to the Cloud Task Manager API! The server is running successfully.",
+  );
+});
+
 // 2. ROUTES
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/tasks", taskRoutes);
