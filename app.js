@@ -6,10 +6,16 @@ async function fetchTasks() {
     const tasks = await res.json();
 
     const list = document.getElementById("taskList");
+    const clearBtn = document.getElementById("clearAllBtn"); // Clear button ko pakda
     list.innerHTML = "";
 
-    // Array check taaki crash na ho
     if (Array.isArray(tasks)) {
+      // --- STEP 3: Button Logic ---
+      // Agar tasks hain toh button dikhao, nahi toh chhupa do
+      if (clearBtn) {
+        clearBtn.style.display = tasks.length > 0 ? "block" : "none";
+      }
+
       tasks.forEach((task) => {
         const li = document.createElement("li");
         li.innerHTML = `
@@ -45,6 +51,26 @@ async function deleteTask(id) {
   if (confirm("Delete this task?")) {
     await fetch(`${API_URL}/${id}`, { method: "DELETE" });
     fetchTasks();
+  }
+}
+
+// Clear All Tasks Function
+async function clearAllTasks() {
+  if (confirm("Are you sure you want to delete ALL tasks?")) {
+    try {
+      const res = await fetch(API_URL, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        console.log("All tasks cleared");
+        fetchTasks();
+      } else {
+        alert("Failed to clear tasks");
+      }
+    } catch (err) {
+      console.error("Error clearing tasks:", err);
+    }
   }
 }
 
