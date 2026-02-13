@@ -22,7 +22,7 @@ app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/tasks", taskRoutes);
 
 // 3. DATABASE CONNECTION
-// Using family: 4 as a safety net for local environments
+
 mongoose
   .connect(process.env.MONGO_URI, { family: 4 })
   .then(() => {
