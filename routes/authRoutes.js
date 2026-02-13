@@ -4,7 +4,7 @@ const User = require("../models/User");
 const bcrypt = require("bcryptjs"); // Password compare karne ke liye
 const jwt = require("jsonwebtoken"); // Token banane ke liye
 
-// 1. SIGNUP ROUTE (Jo aapke paas pehle se hai)
+// 1. SIGNUP ROUTE
 router.post("/signup", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -21,22 +21,18 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-// 2. LOGIN ROUTE (Level 3 ke liye naya addition)
+// 2. LOGIN ROUTE
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Check karein user hai ya nahi
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ error: "User not found!" });
 
-    // Password match karein (Bcrypt use karke)
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
       return res.status(400).json({ error: "Invalid Credentials!" });
 
-    // JWT Token generate karein
-    // "MY_SECRET_KEY" ki jagah aap apna koi bhi secret word likh sakti hain
     const token = jwt.sign({ id: user._id }, "MY_SECRET_KEY", {
       expiresIn: "1h",
     });

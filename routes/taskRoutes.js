@@ -1,11 +1,17 @@
 const express = require("express");
 const router = express.Router();
+const auth = require("../middleware/auth");
 const Task = require("../models/Task");
 
 // 1. GET all tasks
-router.get("/", async (req, res) => {
-  const tasks = await Task.find();
-  res.json(tasks);
+router.get("/", auth, async (req, res) => {
+  // Ab ye route secure ho gaya!
+  try {
+    const tasks = await Task.find({ user: req.user });
+    res.json(tasks);
+  } catch (err) {
+    res.status(500).send("Server Error");
+  }
 });
 
 // 2. POST a new task

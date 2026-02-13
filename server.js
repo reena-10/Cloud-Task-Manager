@@ -1,10 +1,9 @@
-require("dotenv").config();
 const express = require("express");
+const app = express();
+require("dotenv").config();
 const mongoose = require("mongoose");
 const cors = require("cors"); //
 const taskRoutes = require("./routes/taskRoutes");
-
-const app = express();
 
 // 1. MIDDLEWARE
 // app.use(cors()) must come BEFORE your routes
