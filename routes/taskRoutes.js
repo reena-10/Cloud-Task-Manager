@@ -1,27 +1,33 @@
 const express = require("express");
 const router = express.Router();
-const auth = require("../middleware/auth");
 const Task = require("../models/Task");
 
 // 1. GET all tasks
-router.get("/", auth, async (req, res) => {
-  // Ab ye route secure ho gaya!
+router.get("/", async (req, res) => {
   try {
-    const tasks = await Task.find({ user: req.user });
+    // Ab hum saare tasks dikhayenge bina kisi user filter ke
+    const tasks = await Task.find();
     res.json(tasks);
   } catch (err) {
     res.status(500).send("Server Error");
   }
 });
 
-// 2. POST a new task
+// 2. POST a new task - (Add button fix)
 router.post("/", async (req, res) => {
-  const newTask = new Task({ title: req.body.title });
-  await newTask.save();
-  res.json(newTask);
+  try {
+    const newTask = new Task({
+      title: req.body.title,
+      completed: false, // Default false
+    });
+    const savedTask = await newTask.save();
+    res.json(savedTask);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-// 3. DELETE ALL (Fix: Must be above /:id)
+// 3. DELETE ALL
 router.delete("/", async (req, res) => {
   try {
     await Task.deleteMany({});
@@ -43,10 +49,16 @@ router.delete("/:id", async (req, res) => {
 
 // 5. PATCH (Toggle)
 router.patch("/:id", async (req, res) => {
-  const task = await Task.findById(req.params.id);
-  task.completed = !task.completed;
-  await task.save();
-  res.json(task);
+  try {
+    const task = await Task.findById(req.params.id);
+    if (!task) return res.status(404).json({ message: "Task not found" });
+
+    task.completed = !task.completed;
+    await task.save();
+    res.json(task);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 module.exports = router;

@@ -52,6 +52,13 @@ async function deleteTask(id) {
     fetchTasks();
   }
 }
-
+// Input box mein Enter dabane par task add ho jaye
+document
+  .getElementById("taskInput")
+  .addEventListener("keypress", function (event) {
+    if (event.key === "Enter") {
+      addTask();
+    }
+  });
 // Page load par tasks fetch karein
 fetchTasks();
