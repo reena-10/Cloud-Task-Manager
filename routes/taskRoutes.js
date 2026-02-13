@@ -5,21 +5,17 @@ const Task = require("../models/Task");
 // 1. GET ALL TASKS
 router.get("/", async (req, res) => {
   try {
-    // Sabhi tasks ko find karein bina kisi filter ke
     const tasks = await Task.find();
-    res.json(tasks);
+    res.status(200).json(tasks); // Ye hamesha Array [] return karega
   } catch (err) {
-    res.status(500).json({ error: "Server Error" });
+    res.status(500).json({ error: err.message });
   }
 });
 
-// 2. POST A NEW TASK (Add Button Fix)
+// 2. POST A NEW TASK
 router.post("/", async (req, res) => {
   try {
-    // Sirf title save karein, user ki zaroorat nahi hai
-    const newTask = new Task({
-      title: req.body.title,
-    });
+    const newTask = new Task({ title: req.body.title });
     const savedTask = await newTask.save();
     res.status(201).json(savedTask);
   } catch (err) {
@@ -27,7 +23,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-// 3. DELETE ALL TASKS
+// 3. DELETE ALL
 router.delete("/", async (req, res) => {
   try {
     await Task.deleteMany({});
@@ -37,25 +33,11 @@ router.delete("/", async (req, res) => {
   }
 });
 
-// 4. DELETE ONE TASK
+// 4. DELETE ONE
 router.delete("/:id", async (req, res) => {
   try {
     await Task.findByIdAndDelete(req.params.id);
     res.json({ message: "Task deleted" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// 5. PATCH (Toggle Complete)
-router.patch("/:id", async (req, res) => {
-  try {
-    const task = await Task.findById(req.params.id);
-    if (!task) return res.status(404).json({ message: "Task not found" });
-
-    task.completed = !task.completed;
-    await task.save();
-    res.json(task);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
