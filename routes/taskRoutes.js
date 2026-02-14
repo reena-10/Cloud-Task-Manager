@@ -1,60 +1,75 @@
-const express = require("express");
-const router = express.Router();
-const Task = require("../models/Task");
+// 🔑 ID Logic (Har device ke liye alag)
+if (!localStorage.getItem("userSecretKey")) {
+  const uniqueId =
+    "user-" + Date.now() + "-" + Math.random().toString(36).slice(2, 11);
+  localStorage.setItem("userSecretKey", uniqueId);
+}
+const SECRET = localStorage.getItem("userSecretKey");
 
-// 1. GET ALL TASKS
-router.get("/", async (req, res) => {
+// Debugging: Isse aapko console mein dikhega ki har device ki ID alag hai
+console.log("Current User Secret Key:", SECRET);
+
+const API_URL = "https://cloud-task-manager-1519.onrender.com/api/tasks";
+const getUrl = () => `${API_URL}?secret=${SECRET}`;
+
+async function fetchTasks() {
   try {
-    const { secret } = req.query; // Frontend se aayi chabi
+    const res = await fetch(getUrl());
+    const tasks = await res.json();
+    const list = document.getElementById("taskList");
+    const clearBtn = document.getElementById("clearAllBtn");
+    list.innerHTML = "";
 
-    if (!secret) return res.json([]);
-
-    const tasks = await Task.find({ secretKey: secret });
-    res.json(tasks);
+    if (Array.isArray(tasks)) {
+      if (clearBtn)
+        clearBtn.style.display = tasks.length > 0 ? "block" : "none";
+      tasks.forEach((task) => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <span class="${task.completed ? "completed" : ""}" onclick="toggleTask('${task._id}')">${task.title}</span>
+          <button onclick="deleteTask('${task._id}')" class="delete-btn">✕</button>
+        `;
+        list.appendChild(li);
+      });
+    }
   } catch (err) {
-    res.status(500).json({ error: "Server Error" });
+    console.error("Error fetching tasks:", err);
   }
-});
+}
 
-// 2. POST A NEW TASK
-router.post("/", async (req, res) => {
-  try {
-    const { secret } = req.query;
-    const newTask = new Task({
-      title: req.body.title,
-      secretKey: secret,
-    });
-    const savedTask = await newTask.save();
-    res.status(201).json(savedTask);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
+async function addTask() {
+  const input = document.getElementById("taskInput");
+  if (!input.value) return;
+  await fetch(getUrl(), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ title: input.value }),
+  });
+  input.value = "";
+  fetchTasks();
+}
+
+async function deleteTask(id) {
+  if (confirm("Delete this?")) {
+    await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+    fetchTasks();
   }
-});
+}
 
-// 3. DELETE ALL
-router.delete("/", async (req, res) => {
-  try {
-    const { secret } = req.query;
-    await Task.deleteMany({ secretKey: secret });
-    res.json({ message: "Tasks cleared" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+async function toggleTask(id) {
+  await fetch(`${API_URL}/${id}`, { method: "PATCH" });
+  fetchTasks();
+}
+
+async function clearAllTasks() {
+  if (confirm("Clear ALL your tasks?")) {
+    await fetch(getUrl(), { method: "DELETE" });
+    fetchTasks();
   }
+}
+
+document.getElementById("taskInput")?.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") addTask();
 });
 
-// Baki routes
-router.delete("/:id", async (req, res) => {
-  await Task.findByIdAndDelete(req.params.id);
-  res.json({ message: "Deleted" });
-});
-
-router.patch("/:id", async (req, res) => {
-  const task = await Task.findById(req.params.id);
-  if (task) {
-    task.completed = !task.completed;
-    await task.save();
-    res.json(task);
-  }
-});
-
-module.exports = router;
+fetchTasks();
