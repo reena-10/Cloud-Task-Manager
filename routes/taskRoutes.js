@@ -2,10 +2,13 @@ const express = require("express");
 const router = express.Router();
 const Task = require("../models/Task");
 
-// 1. GET ALL TASKS (Filtered by Secret Key)
+// 1. GET ALL TASKS
 router.get("/", async (req, res) => {
   try {
-    const { secret } = req.query;
+    const { secret } = req.query; // Frontend se aayi chabi
+
+    if (!secret) return res.json([]);
+
     const tasks = await Task.find({ secretKey: secret });
     res.json(tasks);
   } catch (err) {
@@ -13,7 +16,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// 2. POST A NEW TASK (With Secret Key)
+// 2. POST A NEW TASK
 router.post("/", async (req, res) => {
   try {
     const { secret } = req.query;
@@ -28,21 +31,21 @@ router.post("/", async (req, res) => {
   }
 });
 
-// 3. DELETE ALL (Only for this specific user)
+// 3. DELETE ALL
 router.delete("/", async (req, res) => {
   try {
     const { secret } = req.query;
     await Task.deleteMany({ secretKey: secret });
-    res.json({ message: "Your tasks cleared" });
+    res.json({ message: "Tasks cleared" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// 4. DELETE ONE & PATCH (Baki same rahega)
+// Baki routes
 router.delete("/:id", async (req, res) => {
   await Task.findByIdAndDelete(req.params.id);
-  res.json({ message: "Task deleted" });
+  res.json({ message: "Deleted" });
 });
 
 router.patch("/:id", async (req, res) => {
