@@ -2,20 +2,25 @@ const express = require("express");
 const router = express.Router();
 const Task = require("../models/Task");
 
-// 1. GET ALL TASKS
+// 1. GET ALL TASKS (Filtered by Secret Key)
 router.get("/", async (req, res) => {
   try {
-    const tasks = await Task.find();
-    res.status(200).json(tasks); // Ye hamesha Array [] return karega
+    const { secret } = req.query;
+    const tasks = await Task.find({ secretKey: secret });
+    res.json(tasks);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: "Server Error" });
   }
 });
 
-// 2. POST A NEW TASK
+// 2. POST A NEW TASK (With Secret Key)
 router.post("/", async (req, res) => {
   try {
-    const newTask = new Task({ title: req.body.title });
+    const { secret } = req.query;
+    const newTask = new Task({
+      title: req.body.title,
+      secretKey: secret,
+    });
     const savedTask = await newTask.save();
     res.status(201).json(savedTask);
   } catch (err) {
@@ -23,23 +28,29 @@ router.post("/", async (req, res) => {
   }
 });
 
-// 3. DELETE ALL
+// 3. DELETE ALL (Only for this specific user)
 router.delete("/", async (req, res) => {
   try {
-    await Task.deleteMany({});
-    res.status(200).json({ message: "All tasks cleared" });
+    const { secret } = req.query;
+    await Task.deleteMany({ secretKey: secret });
+    res.json({ message: "Your tasks cleared" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// 4. DELETE ONE
+// 4. DELETE ONE & PATCH (Baki same rahega)
 router.delete("/:id", async (req, res) => {
-  try {
-    await Task.findByIdAndDelete(req.params.id);
-    res.json({ message: "Task deleted" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  await Task.findByIdAndDelete(req.params.id);
+  res.json({ message: "Task deleted" });
+});
+
+router.patch("/:id", async (req, res) => {
+  const task = await Task.findById(req.params.id);
+  if (task) {
+    task.completed = !task.completed;
+    await task.save();
+    res.json(task);
   }
 });
 
